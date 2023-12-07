@@ -6,3 +6,8 @@ yarn.lock
 
 # Output of 'npm pack'
 *.tgz
+
+# Configs
+config/config.json
+config/users/**
+!config/users/example.json

@@ -6,6 +6,8 @@
     "types": [
       "jest",
       "@cloudflare/workers-types"
-    ]
+    ],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }

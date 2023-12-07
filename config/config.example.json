@@ -1,0 +1,14 @@
+{
+    "oauth": {
+        "issuer": "https://example.com/oidc/"
+    },
+
+    "domains": {
+        "example.com": {},
+        "example.org": {
+            "oauth": {
+                "issuer": "https://example.org/oidc/"
+            }
+        }
+    }
+}

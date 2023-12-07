@@ -1,0 +1,11 @@
+name="cf-webfinger"
+main="src/index.ts"
+
+routes = [
+    { pattern = "polaris.rest", custom_domain = true },
+    { pattern = "zhr.one", custom_domain = true },
+    { pattern = "vlad.lgbt/.well-known/webfinger*", zone_name = "vlad.lgbt" },
+    { pattern = "vlad.gg/.well-known/webfinger*", zone_name = "vlad.gg" },
+]
+
+compatibility_date = "2022-11-22"

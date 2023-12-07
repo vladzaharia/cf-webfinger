@@ -1,0 +1,8 @@
+dist
+node_modules
+worker
+yarn.lock
+.cargo-ok
+
+# Output of 'npm pack'
+*.tgz

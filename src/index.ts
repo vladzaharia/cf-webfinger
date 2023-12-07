@@ -13,6 +13,11 @@ app.get('/.well-known/webfinger', (c) => {
 
   // Check if the domain is whitelisted
   const domain = resource.split('@')[1]
+
+  if (!resource.includes("acct:") || !domain) {
+    return c.json({ message: 'Resource must be in form acct:email@domain.com' }, 400)
+  }
+
   if (!ACCEPTED_DOMAINS.includes(domain)) {
     return c.json({ message: 'Domain is not whitelisted for Polaris Auth access' }, 400)
   }

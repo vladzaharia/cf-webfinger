@@ -17,6 +17,12 @@ describe('Test webfinger', () => {
     expect(await res.json()).toEqual({ message: 'Missing resource parameter' })
   })
 
+  it('Should return 400 response when resource is malformed', async () => {
+    const res = await app.request('http://localhost/.well-known/webfinger?resource=acct:something')
+    expect(res.status).toBe(400)
+    expect(await res.json()).toEqual({ message: 'Resource must be in form acct:email@domain.com' })
+  })
+
   it('Should return 400 response when domain is not whitelisted', async () => {
     const res = await app.request('http://localhost/.well-known/webfinger?resource=acct:vlad@example.com')
     expect(res.status).toBe(400)

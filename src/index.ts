@@ -1,12 +1,13 @@
 import { Hono } from "hono";
 
-import { getConfig } from "./utils/config";
+import { User, getConfig } from "./utils/config";
+import { WebfingerResponse } from "./utils/webfinger";
 
 const app = new Hono();
 
 app.get("/.well-known/webfinger", (c) => {
   const config = getConfig();
-  
+
   // Check if the resource parameter is provided
   const resource = c.req.query("resource");
   if (!resource) {
@@ -14,7 +15,9 @@ app.get("/.well-known/webfinger", (c) => {
   }
 
   // Check if the domain can be extracted
-  const domain = resource.split("@")[1];
+  const email = resource.replace("acct:", "");
+  const user = email.split("@")[0];
+  const domain = email.split("@")[1];
 
   if (!resource.includes("acct:") || !domain) {
     return c.json(
@@ -27,7 +30,6 @@ app.get("/.well-known/webfinger", (c) => {
   if (!config.domains || Object.keys(config.domains).length === 0) {
     return c.json({ message: "No domains are whitelisted for access" }, 400);
   }
-
   if (!Object.keys(config.domains).includes(domain)) {
     return c.json({ message: "Domain is not whitelisted for access" }, 400);
   }
@@ -46,19 +48,33 @@ app.get("/.well-known/webfinger", (c) => {
     );
   }
 
-  // Set output domain
-  let outputDomain = "auth.polaris.rest";
-  if (domain === "zhr.one") {
-    outputDomain = "auth.zhr.one";
+  // Check if user is authorized
+  let userObject: User;
+
+  if (!config.users || Object.keys(config.users).length === 0) {
+    return c.json({ message: "No users are whitelisted for access" }, 400);
+  }
+
+  if (!Object.keys(config.users).includes(user)) {
+    for (const user of Object.values(config.users)) {
+      if (user.aliases?.includes(resource.replace("acct:", ""))) {
+        userObject = user;
+        break;
+      }
+    }
+
+    if (!userObject) {
+      return c.json({ message: "User is not whitelisted for access" }, 400);
+    }
   }
 
   // Respond with the webfinger object
-  const output = {
+  const output: WebfingerResponse = {
     subject: resource,
     links: [
       {
         rel: "http://openid.net/specs/connect/1.0/issuer",
-        href: `https://${outputDomain}/application/o/tailscale/`,
+        href: config.domains[domain].oauth?.issuer || config.oauth.issuer,
       },
     ],
   };

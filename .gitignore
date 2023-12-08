@@ -3,6 +3,7 @@ node_modules
 worker
 yarn.lock
 .cargo-ok
+.DS_Store
 
 # Output of 'npm pack'
 *.tgz
@@ -11,3 +12,6 @@ yarn.lock
 config/config.json
 config/users/**
 !config/users/example.json
+
+# Coverage
+coverage

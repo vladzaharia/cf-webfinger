@@ -1,10 +1,12 @@
 import { Hono } from "hono";
 
-import config from "../config/config.json";
+import { getConfig } from "./utils/config";
 
 const app = new Hono();
 
 app.get("/.well-known/webfinger", (c) => {
+  const config = getConfig();
+  
   // Check if the resource parameter is provided
   const resource = c.req.query("resource");
   if (!resource) {
@@ -20,8 +22,6 @@ app.get("/.well-known/webfinger", (c) => {
       400,
     );
   }
-
-  console.log(JSON.stringify(config.domains));
 
   // Check if the domain is whitelisted
   if (!config.domains || Object.keys(config.domains).length === 0) {

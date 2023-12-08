@@ -7,22 +7,14 @@ jest.mock("./utils/config", () => {
 });
 
 import { Config, getConfig } from "./utils/config";
-
-const successfulConfig = {
-  oauth: {
-    issuer: "https://some-domain.com/oauth",
-  },
-  domains: {
-    "some-domain.com": {},
-  },
-};
+import successfulConfig from "../config/config.example.json"
 
 const setConfig = (config: Config = successfulConfig) => {
   const mockedGetConfig = getConfig as jest.MockedFn<typeof getConfig>;
   mockedGetConfig.mockReturnValue(config);
 }
 
-describe("Test webfinger", () => {
+describe("Basic webfinger tests", () => {
   it("Should return 200 response", async () => {
     setConfig();
 
@@ -66,7 +58,8 @@ describe("Test webfinger", () => {
       oauth: {
         issuer: "https://some-domain.com/oauth",
       },
-      domains: {}
+      domains: {},
+      users: {}
     });
 
     const res = await app.request(
